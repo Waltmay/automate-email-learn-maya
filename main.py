@@ -7,6 +7,7 @@ import pandas as pd
 from datetime import date
 from pathlib import Path
 import csv
+import json
 
 # Load in email-related environmental variables
 load_dotenv()
@@ -96,4 +97,6 @@ context = ssl.create_default_context()
 # Log in and send email
 with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
     smtp.login(email_sender, email_password)
-    smtp.sendmail(email_sender, email_receiver, em.as_string())
+    email_list = json.loads(os.environ['EMAIL_RECEIVER'])
+    for email_receiver in email_list:
+        smtp.sendmail(email_sender, email_receiver, em.as_string())
