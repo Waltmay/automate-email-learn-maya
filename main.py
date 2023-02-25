@@ -5,6 +5,7 @@ import ssl
 from email.message import EmailMessage
 import pandas as pd
 from datetime import date
+import csv
 
 # Load in email-related environmental variables
 load_dotenv()
@@ -22,7 +23,21 @@ def det_word_to_send():
     return word, definition
 
 
-word, definition = det_word_to_send()
+def record_word_def_chosen(word, definition, word_id):
+    fieldnames = ['word_id', 'word', 'definition', 'date']
+    if Path('./past-words.csv').is_file():
+        with open('past-words.csv', 'a', encoding='cp1252', newline='') as past_words_csv:
+            writer = csv.DictWriter(past_words_csv, fieldnames=fieldnames)
+            writer.writerow({'word_id': word_id, 'word': word, 'definition': definition, 'date': date.today()})
+    else:
+        with open('past-words.csv', 'a', encoding='cp1252', newline='') as past_words_csv:
+            writer = csv.DictWriter(past_words_csv, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerow({'word_id': word_id, 'word': word, 'definition': definition, 'date': date.today()})
+
+
+
+record_word_def_chosen(word, definition, word_id)
 
 # Subject line of email
 subject = f"Maya Word of the Day: {date.today()}"
@@ -57,7 +72,7 @@ em = EmailMessage()
 em['From'] = email_sender
 em['To'] = email_receiver
 em['Subject'] = subject
-em.set_content(body, subtype = 'html')
+em.set_content(body, subtype='html')
 
 # Add SSL security layer
 context = ssl.create_default_context()
