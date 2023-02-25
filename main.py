@@ -5,6 +5,7 @@ import ssl
 from email.message import EmailMessage
 import pandas as pd
 from datetime import date
+from pathlib import Path
 import csv
 
 # Load in email-related environmental variables
@@ -14,13 +15,28 @@ email_password = os.environ.get('EMAIL_PW')
 email_receiver = os.environ.get('EMAIL_RECEIVER')
 
 
+def subset_to_unchosen_words(all_words):
+    if Path('./past-words.csv').is_file():
+        past_words_df = pd.read_csv('past-words.csv', encoding='cp1252')
+        past_words_list = past_words_df['word_id'].tolist()
+        unchosen_words = all_words[~all_words.word_id.isin(past_words_list)]
+        return unchosen_words
+    else:
+        return all_words
+
+
 def det_word_to_send():
     # Load in with Windows-1252 encoding given the CSV's special characters
-    all_words = pd.read_csv('yucatecan-maya-definitions.csv', encoding='cp1252')
-    word_definition_pair = all_words.sample(n=1)
+    all_words = pd.read_csv('yucatecan-maya-definitions.csv', encoding='cp1252').reset_index(drop=True)
+    unchosen_words = subset_to_unchosen_words(all_words)
+    word_definition_pair = unchosen_words.sample(n=1)
     word = word_definition_pair['words'].values[0].title()
     definition = word_definition_pair['definitions'].values[0]
-    return word, definition
+    word_id = word_definition_pair['word_id'].values[0]
+    return word, definition, word_id
+
+
+word, definition, word_id = det_word_to_send()
 
 
 def record_word_def_chosen(word, definition, word_id):
