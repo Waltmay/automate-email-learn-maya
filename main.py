@@ -4,6 +4,7 @@ import os
 import pandas as pd
 import smtplib
 import ssl
+import sys
 from datetime import date
 from dotenv import load_dotenv
 from email.message import EmailMessage
@@ -24,12 +25,15 @@ def determine_word_to_send():
 
     # Randomly select one word (one row) from all words that haven't been chosen before
     unchosen_words = subset_to_unchosen_words(all_words)
-    word_definition_pair = unchosen_words.sample(n=1)
+    if unchosen_words.empty:
+        sys.exit("All words have been previously chosen. No more new words to send.")
+    else:
+        word_definition_pair = unchosen_words.sample(n=1)
 
-    # Grab the word and definition values from the randomly selected row
-    word = word_definition_pair['words'].values[0].title()
-    definition = word_definition_pair['definitions'].values[0]
-    word_id = word_definition_pair['word_id'].values[0]
+        # Grab the word and definition values from the randomly selected row
+        word = word_definition_pair['words'].values[0].title()
+        definition = word_definition_pair['definitions'].values[0]
+        word_id = word_definition_pair['word_id'].values[0]
     return word, definition, word_id
 
 
