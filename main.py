@@ -14,8 +14,8 @@ def main():
     load_dotenv()
     word, definition, word_id = determine_word_to_send()
     record_word_def_chosen(word, definition, word_id)
-    em = create_email(word, definition)
-    send_email(em)
+    email = create_email(word, definition)
+    send_email(email)
 
 
 def determine_word_to_send():
@@ -59,8 +59,8 @@ def record_word_def_chosen(word, definition, word_id):
 def create_email(word, definition):
     subject, body = create_email_text(word, definition)
 
-    em = structure_email(subject, body)
-    return em
+    email = structure_email(subject, body)
+    return email
 
 
 def create_email_text(word, definition):
@@ -98,14 +98,14 @@ def structure_email(subject, body):
     email_sender = os.environ['EMAIL_SENDER']
 
     # Instantiate EmailMessage class with all necessary info for the email being sent
-    em = EmailMessage()
-    em['From'] = email_sender
-    em['Subject'] = subject
-    em.set_content(body, subtype='html')
-    return em
+    email = EmailMessage()
+    email['From'] = email_sender
+    email['Subject'] = subject
+    email.set_content(body, subtype='html')
+    return email
 
 
-def send_email(em):
+def send_email(email):
     # Load in email-related environmental variables
     email_sender = os.environ.get('EMAIL_SENDER')
     email_password = os.environ.get('EMAIL_PW')
@@ -118,7 +118,7 @@ def send_email(em):
     with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
         smtp.login(email_sender, email_password)
         for email_receiver in email_list:
-            smtp.sendmail(email_sender, email_receiver, em.as_string())
+            smtp.sendmail(email_sender, email_receiver, email.as_string())
 
 
 if __name__ == '__main__':
