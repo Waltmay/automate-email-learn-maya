@@ -13,7 +13,6 @@ import json
 load_dotenv()
 email_sender = os.environ.get('EMAIL_SENDER')
 email_password = os.environ.get('EMAIL_PW')
-email_receiver = os.environ.get('EMAIL_RECEIVER')
 
 
 def subset_to_unchosen_words(all_words):
@@ -87,7 +86,6 @@ body = f'''
 # Instantiate EmailMessage class with all necessary info for the email being sent
 em = EmailMessage()
 em['From'] = email_sender
-em['To'] = email_receiver
 em['Subject'] = subject
 em.set_content(body, subtype='html')
 
@@ -97,6 +95,6 @@ context = ssl.create_default_context()
 # Log in and send email
 with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
     smtp.login(email_sender, email_password)
-    email_list = json.loads(os.environ['EMAIL_RECEIVER'])
+    email_list = json.loads(os.environ['EMAIL_LIST'])
     for email_receiver in email_list:
         smtp.sendmail(email_sender, email_receiver, em.as_string())
