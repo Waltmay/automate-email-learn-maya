@@ -22,7 +22,7 @@ def determine_word_to_send():
     # Load in with Windows-1252 encoding given the CSV's special characters
     all_words = pd.read_csv('yucatecan-maya-definitions.csv', encoding='cp1252').reset_index(drop=True)
 
-    # Randomly select one word from all words that haven't been chosen before
+    # Randomly select one word (one row) from all words that haven't been chosen before
     unchosen_words = subset_to_unchosen_words(all_words)
     word_definition_pair = unchosen_words.sample(n=1)
 
@@ -58,7 +58,6 @@ def record_chosen_word(word, definition, word_id):
 
 def create_email(word, definition):
     subject, body = create_email_text(word, definition)
-
     email = structure_email(subject, body)
     return email
 
@@ -95,11 +94,9 @@ def create_email_text(word, definition):
 
 
 def structure_email(subject, body):
-    email_sender = os.environ['EMAIL_SENDER']
-
     # Instantiate EmailMessage class with all necessary info for the email being sent
     email = EmailMessage()
-    email['From'] = email_sender
+    email['From'] = os.environ['EMAIL_SENDER']
     email['Subject'] = subject
     email.set_content(body, subtype='html')
     return email
