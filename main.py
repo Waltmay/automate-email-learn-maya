@@ -1,13 +1,13 @@
-import os
-from dotenv import load_dotenv
-import smtplib
-import ssl
-from email.message import EmailMessage
-import pandas as pd
-from datetime import date
-from pathlib import Path
 import csv
 import json
+import os
+import pandas as pd
+import smtplib
+import ssl
+from datetime import date
+from dotenv import load_dotenv
+from email.message import EmailMessage
+from pathlib import Path
 
 # Load in email-related environmental variables
 load_dotenv()
