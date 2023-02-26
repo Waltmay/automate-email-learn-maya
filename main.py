@@ -13,7 +13,7 @@ from pathlib import Path
 def main():
     load_dotenv()
     word, definition, word_id = determine_word_to_send()
-    record_word_def_chosen(word, definition, word_id)
+    record_chosen_word(word, definition, word_id)
     email = create_email(word, definition)
     send_email(email)
 
@@ -43,7 +43,7 @@ def subset_to_unchosen_words(all_words):
         return all_words
 
 
-def record_word_def_chosen(word, definition, word_id):
+def record_chosen_word(word, definition, word_id):
     fieldnames = ['word_id', 'word', 'definition', 'date']
     if Path('./past-words.csv').is_file():
         with open('past-words.csv', 'a', encoding='cp1252', newline='') as past_words_csv:
