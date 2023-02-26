@@ -25,7 +25,7 @@ def subset_to_unchosen_words(all_words):
         return all_words
 
 
-def det_word_to_send():
+def determine_word_to_send():
     # Load in with Windows-1252 encoding given the CSV's special characters
     all_words = pd.read_csv('yucatecan-maya-definitions.csv', encoding='cp1252').reset_index(drop=True)
     unchosen_words = subset_to_unchosen_words(all_words)
@@ -36,7 +36,7 @@ def det_word_to_send():
     return word, definition, word_id
 
 
-word, definition, word_id = det_word_to_send()
+word, definition, word_id = determine_word_to_send()
 
 
 def record_word_def_chosen(word, definition, word_id):
