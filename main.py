@@ -10,22 +10,6 @@ from email.message import EmailMessage
 from pathlib import Path
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def main():
     load_dotenv()
     word, definition, word_id = determine_word_to_send()
