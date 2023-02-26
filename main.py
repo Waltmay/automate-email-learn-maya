@@ -25,33 +25,6 @@ email_password = os.environ.get('EMAIL_PW')
 
 
 
-# Subject line of email
-subject = f"Maya Word of the Day: {date.today()}"
-
-body = f'''
-<html>
-    <span style = "font-family: Verdana">
-        <body>
-            The Spanish-Maya word of the day is:
-            <br> 
-            <br> <b>Spanish Word/Phrase:</b> {word} 
-            <br> <b>Mayan Translation:</b> {definition}
-            <br>
-            <br> Notice any typos or mistranslations? Reply to this email to notify the owner!
-            <br>
-            <br> <b> Parts of speech guide </b>
-                <li> <em>sus</em>: sustantivo / noun</li>
-                <li> <em>adj</em>: adjetivo / adjective</li>
-                <li> <em>adv.</em>: adverbio / adverb </li>
-                <li> <em>v.i</em>: verbo intransitvo / intransitive verb</li> 
-                <li> <em>v.t</em>: verbo transitvo / transitive verb</li> 
-                <li> <em>prep</em>: preposici&oacute;n / preposition</li>
-                <li> <em>pron</em>: pronombre / pronoun</li>
-                <li> <em>conj</em>: conjunci&oacute;n / conjunction</li>
-        </body>
-    </span>
-</html>
-'''
 
 # Instantiate EmailMessage class with all necessary info for the email being sent
 em = EmailMessage()
@@ -73,6 +46,7 @@ with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
 def main():
     word, definition, word_id = determine_word_to_send()
     record_word_def_chosen(word, definition, word_id)
+    send_email(word, definition)
 
 
 def determine_word_to_send():
@@ -111,6 +85,41 @@ def record_word_def_chosen(word, definition, word_id):
             writer = csv.DictWriter(past_words_csv, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerow({'word_id': word_id, 'word': word, 'definition': definition, 'date': date.today()})
+
+
+def send_email(word, definition):
+    subject, body = create_email_text(word, definition)
+
+
+def create_email_text(word, definition):
+    # Subject line of email
+    subject = f"Maya Word of the Day: {date.today()}"
+
+    body = f'''
+    <html>
+        <span style = "font-family: Verdana">
+            <body>
+                The Spanish-Maya word of the day is:
+                <br> 
+                <br> <b>Spanish Word/Phrase:</b> {word} 
+                <br> <b>Mayan Translation:</b> {definition}
+                <br>
+                <br> Notice any typos or mistranslations? Reply to this email to notify the owner!
+                <br>
+                <br> <b> Parts of speech guide </b>
+                    <li> <em>sus</em>: sustantivo / noun</li>
+                    <li> <em>adj</em>: adjetivo / adjective</li>
+                    <li> <em>adv.</em>: adverbio / adverb </li>
+                    <li> <em>v.i</em>: verbo intransitvo / intransitive verb</li> 
+                    <li> <em>v.t</em>: verbo transitvo / transitive verb</li> 
+                    <li> <em>prep</em>: preposici&oacute;n / preposition</li>
+                    <li> <em>pron</em>: pronombre / pronoun</li>
+                    <li> <em>conj</em>: conjunci&oacute;n / conjunction</li>
+            </body>
+        </span>
+    </html>
+    '''
+    return subject, body
 
 
 if __name__ == '__main__':
